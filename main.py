@@ -18,7 +18,7 @@ def summarize_news(news_text):
     
     # 모델명 앞에 models/ 를 붙이지 않고 이름만 입력
     response = client.models.generate_content(
-        model="gemini-1.5-flash",
+        model="gemini-2.5-flash",
         contents=prompt
     )
     
