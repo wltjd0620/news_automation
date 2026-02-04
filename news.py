@@ -6,13 +6,15 @@ import os
 def get_news():
     print("1. 실시간 뉴스 데이터를 가져오는 중...")
     # 최근 24시간 내의 경제/IT/테크 뉴스 검색
-    query = "(경제|IT|테크|반도체)+when:24h"
+    query = "(경제|비즈니스|IT|AI|테크|반도체)+when:24h"
     rss_url = f"https://news.google.com/rss/search?q={query}&hl=ko&gl=KR&ceid=KR:ko"
     
     feed = feedparser.parse(rss_url)
     
     if not feed.entries:
         return ""
+
+    print(f"찾은 기사 개수 : {len(feed.entries)}")
 
     news_items = []
     for entry in feed.entries[:10]:
@@ -33,7 +35,7 @@ def summarize_news(news_text):
     제공된 뉴스 리스트를 분석하여, 기술직 직장인이자 연구자를 위한 '데일리 산업 영향력 리포트'를 작성하세요.
 
     [작성 가이드라인]
-    1. 각 기사는 반드시 [기사] 문구로 시작할 것.
+    1. 각 기사는 반드시 [제목] 문구로 시작할 것.
     2. 섹션 구분: '경제/비즈니스'와 '테크/기술'로 분류하여 정리할 것.
     3. 뉴스 구성 요소 (반드시 지킬 것):
        <b>핵심을 찌르는 한 줄 제목</b>
@@ -46,7 +48,6 @@ def summarize_news(news_text):
     [스타일 및 가독성]
     - 텔레그램 HTML 모드를 사용하므로 <b> 태그를 적절히 활용하여 제목과 주요 키워드를 강조할 것.
     - 문장은 간결한 경어체를 사용하고, 이모지를 활용해 가독성을 높일 것.
-    - 각 기사 사이에는 구분선(---)을 넣어 시각적으로 분리할 것.
 
     뉴스 리스트:
     {news_text}
