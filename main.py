@@ -5,8 +5,16 @@ import os
 
 def get_news():
     print("뉴스 데이터를 가져오는 중...")
-    rss_url = "https://news.google.com/rss/search?q=경제+IT+테크&hl=ko&gl=KR&ceid=KR:ko"
+    # when:24h 를 붙이면 정확히 최근 24시간 이내의 기사만 가져옵니다.
+    query = "(경제|IT|테크|반도체)+when:24h"
+    
+    # URL 인코딩 이슈를 방지하기 위해 f-string 사용
+    rss_url = f"https://news.google.com/rss/search?q={query}&hl=ko&gl=KR&ceid=KR:ko"
     feed = feedparser.parse(rss_url)
+    
+    if not feed.entries:
+        return "최근 24시간 내에 수집된 뉴스가 없습니다."
+    
     return "\n\n".join([f"제목: {e.title}\n링크: {e.link}" for e in feed.entries[:8]])
 
 def summarize_news(news_text):
