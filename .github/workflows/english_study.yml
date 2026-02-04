@@ -1,0 +1,24 @@
+name: Daily English Study
+
+on:
+  schedule:
+    - cron: '0 3 * * *'  # 한국 시간 오후 12시 (점심시간)
+  workflow_dispatch:      # 수동 실행 가능
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: pip install google-genai requests
+      - name: Run script
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          ENGLISH_CHAT_ID: ${{ secrets.ENGLISH_CHAT_ID }}
+        run: python english.py
