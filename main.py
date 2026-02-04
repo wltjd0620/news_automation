@@ -22,15 +22,38 @@ def summarize_news(news_text):
     # 최신 Client 객체 생성 방식
     client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
     
-    prompt = f"다음 뉴스를 경제와 테크로 분류해서 요약하고 링크를 포함해줘:\n\n{news_text}"
-    
-    # 모델명 앞에 models/ 를 붙이지 않고 이름만 입력
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=prompt
-    )
-    
-    return response.text
+    prompt = f"""
+    당신은 전문 산업 분석가이자 기술 전략가입니다. 
+    제공된 뉴스 리스트를 바탕으로 바쁜 직장인을 위한 '산업 영향력 보고서'를 작성하세요.
+
+    [작성 가이드라인]
+    1. 섹션 구분: '경제/비즈니스'와 '테크/기술'로 분류할 것.
+    2. 뉴스 구성:
+       - [제목]: 뉴스 제목을 요약하여 표기
+       - [핵심 요약]: 해당 기사의 핵심 내용을 1문장으로 정리
+       - [산업 영향력 분석]: 
+          * 경제 기사: 이 뉴스가 어떤 특정 산업(예: 반도체, 자동차, 금융 등)에 긍정적/부정적 영향을 줄지 분석
+          * 테크 기사: 이 기술이 실제 산업 현장(예: 스마트 팩토리, Edge AI, 디스플레이 등)에 미칠 변화와 파급력 분석
+       - [원본 링크]: 해당 기사로 바로 이동할 수 있는 링크
+    3. 톤앤매너: 전문적이고 객관적인 문체를 사용하되, 가독성을 위해 불렛포인트를 활용할 것.
+
+    뉴스 리스트:
+    {news_text}
+    """
+    try:
+        response = client.models.generate_content(
+            model="gemini-3.0-flash",
+            contents=prompt
+        )
+        
+        # 텔레그램 메시지 길이 제한(4096자)을 고려하여 토큰 정보와 함께 반환
+        usage = response.usage_metadata
+        token_info = f"\n\n---\n📊 분석 완료 (사용 토큰: {usage.total_token_count})"
+        return response.text + token_info
+        
+    except Exception as e:
+        print(f"AI 분석 실패: {e}")
+        return "AI 분석 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
 
 def send_telegram(text):
     print("텔레그램 전송 중...")
