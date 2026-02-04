@@ -24,7 +24,7 @@ def summarize_news(news_text):
     genai.configure(api_key=os.environ["GEMINI_API_KEY"])
     
     # 404 에러 방지를 위해 'models/' 경로 명시
-    model = genai.GenerativeModel('models/gemini-1.5-flash')
+    model = genai.GenerativeModel('gemini-1.5-flash')
     
     prompt = f"""
     당신은 유능한 경제/테크 뉴스 큐레이터입니다. 아래 뉴스 리스트를 직장인이 읽기 좋게 요약해주세요.
