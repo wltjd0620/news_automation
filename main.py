@@ -33,15 +33,16 @@ def summarize_news(news_text):
 
 # 3. 텔레그램 전송
 def send_telegram(text):
-    bot_token = os.environ["TELEGRAM_BOT_TOKEN"]
-    chat_id = os.environ["TELEGRAM_CHAT_ID"]
-    url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-    payload = {
-        "chat_id": chat_id,
-        "text": text,
-        "disable_web_page_preview": False
-    }
-    requests.post(url, json=payload)
+    try:
+        bot_token = os.environ["TELEGRAM_BOT_TOKEN"]
+        chat_id = os.environ["TELEGRAM_CHAT_ID"]
+        url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+        payload = {"chat_id": chat_id, "text": text}
+        response = requests.post(url, json=payload)
+        response.raise_for_status() # 에러 발생 시 로그에 남김
+    except Exception as e:
+        print(f"텔레그램 전송 실패: {e}")
+        raise e
 
 if __name__ == "__main__":
     news_data = get_news()
