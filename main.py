@@ -17,7 +17,7 @@ def get_news():
 # 2. Gemini를 이용한 요약
 def summarize_news(news_text):
     genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    model = genai.GenerativeModel('models/gemini-1.5-flash')
     
     prompt = f"""
     아래 뉴스 리스트를 읽고, 바쁜 직장인을 위해 핵심만 요약해줘.
