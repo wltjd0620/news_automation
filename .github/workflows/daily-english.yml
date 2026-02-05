@@ -2,7 +2,7 @@ name: Daily English
 
 on:
   schedule:
-    - cron: '0 3 * * *'  # 한국 시간 오후 12시 (점심시간)
+    - cron: '0 22 * * *'  # 한국 시간 오전 7시
   workflow_dispatch:      # 수동 실행 버튼
 
 jobs:
