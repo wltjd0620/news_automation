@@ -10,10 +10,6 @@ def get_news():
         "경제/비즈니스": "(경제|비즈니스|금융|증시|환율)+when:24h",
         "테크/기술": "(반도체|IT|AI|디스플레이|임베디드)+when:24h"
     }
-
-    # 최근 24시간 내의 경제/IT/테크 뉴스 검색
-    query = "(경제|비즈니스|IT|AI|테크|반도체)+when:24h"
-    rss_url = f"https://news.google.com/rss/search?q={query}&hl=ko&gl=KR&ceid=KR:ko"
     
     all_news_items = []
     
