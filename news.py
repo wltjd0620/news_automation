@@ -89,27 +89,39 @@ def send_telegram(text):
     articles = [a.strip() for a in articles if a.strip()]
     
     # 5개씩 묶어서 전송 (경제 5개 / 테크 5개)
-    chunk_size = 5
-    titles = ["📈 경제/비즈니스 인사이트 리포트", "🚀 테크/기술 산업 리포트"]
-
-    for i in range(0, len(articles), chunk_size):
-        chunk = articles[i : i + chunk_size]
-        idx = i // chunk_size
+    titles = ["📈 경제/비즈니스 인사이트", "🚀 테크/기술 산업 리포트"]
+    current_msg = ""
+    max_len = 3800
+    
+    # 기사들을 5개씩 나눕니다 (0~4번: 경제, 5~9번: 테크)
+    for idx, start_idx in enumerate([0, 5]):
+        category_chunk = articles[start_idx : start_idx + 5]
+        current_msg = f"<b>{titles[idx]}</b>\n\n"
         
-        header = f"<b>{titles[idx] if idx < len(titles) else '📢 추가 분석 리포트'}</b>\n\n"
-        body = ""
-        for item in chunk:
-            body += "----------------------------\n<b>[기사]</b> " + item + "\n\n"
+        for article in category_chunk:
+            formatted_article = "----------------------------\n<b>[기사]</b> " + article + "\n\n"
+            
+            # 한 카테고리 내에서도 용량이 넘치면 끊어서 전송
+            if len(current_msg) + len(formatted_article) > max_len:
+                requests.post(url, json={
+                    "chat_id": chat_id,
+                    "text": current_msg,
+                    "parse_mode": "HTML",
+                    "disable_notification": True
+                })
+                current_msg = f"<b>{titles[idx]} (계속)</b>\n\n" + formatted_article
+            else:
+                current_msg += formatted_article
         
-        payload = {
-            "chat_id": chat_id,
-            "text": header + body,
-            "parse_mode": "HTML",
-            "disable_notification": False if i == 0 else True
-        }
-        
-        res = requests.post(url, json=payload)
-        print(f"📡 {idx+1}부 전송 결과: {res.status_code}")
+        # 한 카테고리(5개)가 끝나면 남은 내용을 즉시 전송하여 다음 카테고리와 분리
+        if current_msg:
+            requests.post(url, json={
+                "chat_id": chat_id,
+                "text": current_msg,
+                "parse_mode": "HTML",
+                "disable_notification": False if idx == 0 else True
+            })
+            print(f"📡 {titles[idx]} 전송 완료")
 
 if __name__ == "__main__":
     try:
