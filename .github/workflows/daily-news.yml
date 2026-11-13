@@ -1,8 +1,8 @@
 name: Daily Tech & Econ News
 
 on:
-  schedule:
-    - cron: '0 22 * * *' # 한국 시간 기준 오전 7시 (UTC 22시)
+  # schedule:
+  #   - cron: '0 22 * * *' # 한국 시간 기준 오전 7시 (UTC 22시)
   workflow_dispatch: # 수동으로 실행해볼 수 있는 버튼 생성
 
 jobs:
